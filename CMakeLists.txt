@@ -283,7 +283,7 @@ target_link_libraries_system(
 target_link_libraries(
     ${QSYN_LIB_NAME} 
     PRIVATE 
-    lapack 
+    $<$<NOT:$<BOOL:${WIN32}>>:lapack>
 # OpenMP::OpenMP_CXX 
     ${BLAS_LIBRARIES}
     ${LAPACK_LIBRARIES})
@@ -358,10 +358,14 @@ target_link_libraries_system(
 target_link_libraries(
     ${CMAKE_PROJECT_NAME} 
     PRIVATE 
-    lapack 
+    $<$<NOT:$<BOOL:${WIN32}>>:lapack>
 # OpenMP::OpenMP_CXX 
     ${BLAS_LIBRARIES} 
     ${LAPACK_LIBRARIES})
+
+if(WIN32)
+    target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE shlwapi)
+endif()
 
 # ----------------------------------------------------------------------------
 # config for qsyn unit tests
@@ -392,6 +396,10 @@ target_link_libraries_system(
     fmt::fmt
     spdlog::spdlog
     Microsoft.GSL::GSL)
+
+if(WIN32)
+    target_link_libraries(${UNIT_TEST_NAME} PRIVATE shlwapi)
+endif()
 
 target_compile_options(
     ${UNIT_TEST_NAME}

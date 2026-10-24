@@ -114,7 +114,7 @@ std::optional<QCir> synthesize_boolean_oracle(XAG xag, size_t n_ancilla, size_t 
 
     auto schedule = *pebble_result;
     spdlog::debug("solution:");
-    for (const size_t i : views::iota(0UL, schedule.size())) {
+    for (const size_t i : views::iota(size_t{0}, schedule.size())) {
         spdlog::debug("time = {:02} : {}", i, fmt::join((*pebble_result)[i] | views::transform([](bool b) { return b ? "*" : "."; }), ""));
     }
 

@@ -11,6 +11,7 @@
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
 #include <Windows.h>
+#include <io.h>
 #else
 #include <sys/ioctl.h>
 #include <unistd.h>
@@ -59,8 +60,8 @@ TerminalSize get_terminal_size() {
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
     return {
-        csbi.srWindow.Right - csbi.srWindow.Left + 1,
-        csbi.srWindow.Bottom - csbi.srWindow.Top + 1};
+        static_cast<unsigned>(csbi.srWindow.Right - csbi.srWindow.Left + 1),
+        static_cast<unsigned>(csbi.srWindow.Bottom - csbi.srWindow.Top + 1)};
 #else
     struct winsize w {};
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);  // NOLINT(cppcoreguidelines-pro-type-vararg) : conform to POSIX

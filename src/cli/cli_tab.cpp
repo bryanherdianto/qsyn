@@ -272,7 +272,7 @@ std::vector<std::string> dvlab::CommandLineInterface::_get_file_matches(fs::path
         if (prefix.back() == '\\')
             prefix.pop_back();
         if (prefix.empty() || entry.path().filename().string().compare(0, prefix.size(), prefix) == 0) {
-            files.emplace_back(entry.path().filename());
+            files.emplace_back(entry.path().filename().string());
         }
     }
 

@@ -46,7 +46,7 @@ std::optional<std::vector<size_t>> get_boundary_ids_if_valid(
 
 tl::generator<std::vector<size_t>> unfuse_combinations(
     std::vector<size_t> neighbor_ids, size_t max_unfusions) {
-    for (auto subset_size : std::views::iota(0ul, max_unfusions + 1)) {
+    for (auto subset_size : std::views::iota(size_t{0}, max_unfusions + 1)) {
         for (auto&& neighbors_to_unfuse :
              dvlab::combinations(neighbor_ids, subset_size)) {
             co_yield neighbors_to_unfuse;

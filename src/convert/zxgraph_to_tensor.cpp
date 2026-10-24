@@ -114,7 +114,7 @@ std::optional<tensor::QTensor<double>> ZX2TSMapper::map(zx::ZXGraph const& graph
         tl::fold_left(_zx2ts_list, tensor::QTensor<double>(1. + 0.i),
                       [](auto const& a, auto const& b) { return tensordot(a, b.tensor); });
 
-    std::ranges::for_each(std::views::iota(0ul, _zx2ts_list.size()), [this](auto const i) {
+    std::ranges::for_each(std::views::iota(size_t{0}, _zx2ts_list.size()), [this](auto const i) {
         // We don't care whether key collision happen because _get_axis_orders takes care of such cases
         _frontiers(i).emplace(_boundary_edges[i], 0);
     });
@@ -313,7 +313,7 @@ tensor::QTensor<double> ZX2TSMapper::_dehadamardize(tensor::QTensor<double> cons
         tensor::QTensor<double>::hbox(2), info.hadamard_edge_pins.size());
 
     qsyn::tensor::TensorAxisList connect_pin =
-        std::views::iota(0ul, info.hadamard_edge_pins.size()) |
+        std::views::iota(size_t{0}, info.hadamard_edge_pins.size()) |
         std::views::transform([](auto i) { return 2 * i; }) |
         tl::to<std::vector>();
 
@@ -360,7 +360,7 @@ void ZX2TSMapper::_tensordot_vertex(zx::ZXGraph const& graph, zx::ZXVertex* v) {
     spdlog::debug("Mapping vertex {:>4} ({}): Tensordot", v->get_id(), v->type());
     auto const dehadamarded = _dehadamardize(_curr_tensor(), info);
     // we don't care which pins to connect because all vertices correspond to a symmetric tensor
-    auto const vertex_pins_to_connect = std::views::iota(0ul, info.simple_edge_pins.size()) | tl::to<std::vector>();
+    auto const vertex_pins_to_connect = std::views::iota(size_t{0}, info.simple_edge_pins.size()) | tl::to<std::vector>();
 
     _curr_tensor() = tensordot(dehadamarded, get_tensor_form(graph, v), info.simple_edge_pins, vertex_pins_to_connect);
 

@@ -127,7 +127,7 @@ std::string get_syntax(ArgumentParser const& parser, Argument const& arg) {
     while (count > 0) {
         count--;
     }
-    for (auto i : std::views::iota(0ul, nargs.lower)) {
+    for (auto i : std::views::iota(size_t{0}, nargs.lower)) {
         ret += fmt::format("{}{}", usage_string, i == nargs.lower - 1 ? "" : " ");
     }
     if (nargs.upper == SIZE_MAX) {

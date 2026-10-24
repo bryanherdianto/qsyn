@@ -34,7 +34,7 @@ dvlab::BooleanMatrix get_row_products(dvlab::BooleanMatrix const& matrix) {
 
     row_products.reserve(matrix.num_rows() * (matrix.num_rows() - 1) / 2, matrix.num_cols());
 
-    for (auto const& [a, b] : dvlab::combinations<2>(std::views::iota(0ul, matrix.num_rows()) | tl::to<std::vector>())) {
+    for (auto const& [a, b] : dvlab::combinations<2>(std::views::iota(size_t{0}, matrix.num_rows()) | tl::to<std::vector>())) {
         row_products.push_row(matrix[a] * matrix[b]);
     }
 
@@ -62,7 +62,7 @@ dvlab::BooleanMatrix get_chi_matrix(dvlab::BooleanMatrix const& row_products, dv
     };
 
     auto seen_rows    = std::unordered_set<dvlab::BooleanMatrix::Row, dvlab::BooleanMatrixRowHash>();
-    auto const id_vec = std::views::iota(0ul, num_rows) | tl::to<std::vector>();
+    auto const id_vec = std::views::iota(size_t{0}, num_rows) | tl::to<std::vector>();
 
     for (auto const& [a, b, c] : dvlab::combinations<3>(id_vec)) {
         auto const new_row =
@@ -99,7 +99,7 @@ dvlab::BooleanMatrix get_nullspace_transposed(dvlab::BooleanMatrix const& matrix
 
     auto curr_pivot = size_t{0};
 
-    for (auto const col : std::views::iota(0ul, n_cols)) {
+    for (auto const col : std::views::iota(size_t{0}, n_cols)) {
         if (augmented[curr_pivot][col] == 0) {
             for (auto const row : std::views::iota(curr_pivot + 1, n_rows)) {
                 if (augmented[row][col] != 0) {
@@ -192,7 +192,7 @@ Polynomial todd_once(Polynomial const& polynomial) {
     auto const phase_poly_matrix = load_phase_poly_matrix(polynomial);
 
     auto seen_z        = std::unordered_set<dvlab::BooleanMatrix::Row, dvlab::BooleanMatrixRowHash>();
-    auto const idx_vec = std::views::iota(0ul, polynomial.size()) | tl::to<std::vector>();
+    auto const idx_vec = std::views::iota(size_t{0}, polynomial.size()) | tl::to<std::vector>();
 
     auto const row_products = get_row_products(phase_poly_matrix);
     for (auto const& [a, b] : dvlab::combinations<2>(idx_vec)) {
@@ -231,7 +231,7 @@ Polynomial todd_once(Polynomial const& polynomial) {
                 y_copy.emplace_back(1);
             }
 
-            for (auto const i : std::views::iota(0ul, phase_poly_matrix_copy.num_rows())) {
+            for (auto const i : std::views::iota(size_t{0}, phase_poly_matrix_copy.num_rows())) {
                 if (z[i] == 1) {
                     phase_poly_matrix_copy[i] += y_copy;
                 }
@@ -258,7 +258,7 @@ public:
         }
 
         auto const ones =
-            std::views::iota(0ul, rotation.n_qubits()) |
+            std::views::iota(size_t{0}, rotation.n_qubits()) |
             std::views::filter([&rotation](size_t i) { return rotation.pauli_product().is_z_set(i); }) |
             tl::to<std::vector>();
 

@@ -24,7 +24,7 @@ void report_simplification_result(
         match_counts.size(),
         std::reduce(std::begin(match_counts), std::end(match_counts), 0));
 
-    for (auto i : std::views::iota(0ul, match_counts.size())) {
+    for (auto i : std::views::iota(size_t{0}, match_counts.size())) {
         spdlog::log(
             spdlog::level::debug,
             "{:>4}) {} matches",

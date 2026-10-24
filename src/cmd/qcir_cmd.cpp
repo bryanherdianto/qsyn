@@ -146,7 +146,7 @@ dvlab::Command qcir_read_cmd(QCirMgr& qcir_mgr) {
             } else {
                 qcir_mgr.set(std::make_unique<QCir>(std::move(*qcir)));
             }
-            qcir_mgr.get()->set_filename(std::filesystem::path{filepath}.stem());
+            qcir_mgr.get()->set_filename(std::filesystem::path{filepath}.stem().string());
             return CmdExecResult::done;
         }};
 }

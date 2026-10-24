@@ -104,7 +104,7 @@ kitty::dynamic_truth_table XAG::calculate_truth_table(XAGNodeID const& output_id
     auto node_ids_in_cone = tmp | std::views::reverse | tl::to<std::vector>();
     auto truth_table      = kitty::dynamic_truth_table(cut.size());
 
-    for (auto const& minterm : iota(0UL, 1UL << cut.size())) {
+    for (auto const& minterm : iota(size_t{0}, 1UL << cut.size())) {
         std::map<size_t, bool> intermediate_results;
         for (auto const& [i, id] : enumerate(cut)) {
             intermediate_results.insert({id.get(), (minterm >> i) & 1});
@@ -191,7 +191,7 @@ XAG from_xaag(std::istream& input) {
     std::vector<XAGNodeID> output_ids;
     std::vector<bool> output_inverted;
 
-    for ([[maybe_unused]] auto const& _ : std::views::iota(0ul, num_inputs)) {
+    for ([[maybe_unused]] auto const& _ : std::views::iota(size_t{0}, num_inputs)) {
         size_t in{};
         input >> in;
         size_t const id = in >> 1;
@@ -201,7 +201,7 @@ XAG from_xaag(std::istream& input) {
         nodes[id] = XAGNode(XAGNodeID(id), {}, {}, XAGNodeType::INPUT);
         input_ids.emplace_back(id);
     }
-    for ([[maybe_unused]] auto const& _ : std::views::iota(0ul, num_outputs)) {
+    for ([[maybe_unused]] auto const& _ : std::views::iota(size_t{0}, num_outputs)) {
         size_t out{};
         input >> out;
         auto const id          = XAGNodeID(out >> 1);
@@ -209,7 +209,7 @@ XAG from_xaag(std::istream& input) {
         output_ids.emplace_back(id);
         output_inverted.emplace_back(is_inverted);
     }
-    for ([[maybe_unused]] auto const& _ : std::views::iota(0ul, num_ands)) {
+    for ([[maybe_unused]] auto const& _ : std::views::iota(size_t{0}, num_ands)) {
         size_t and_gate{};
         size_t fanin1{};
         size_t fanin2{};
@@ -234,7 +234,7 @@ XAG from_xaag(std::istream& input) {
                                            {fanin1_inverted, fanin2_inverted},
                                            XAGNodeType::AND);
     }
-    for ([[maybe_unused]] auto const& _ : std::views::iota(0ul, num_xors)) {
+    for ([[maybe_unused]] auto const& _ : std::views::iota(size_t{0}, num_xors)) {
         size_t xor_gate{};
         size_t fanin1{};
         size_t fanin2{};

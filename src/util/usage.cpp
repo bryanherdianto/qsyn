@@ -8,9 +8,17 @@
 #include "./usage.hpp"
 
 #include <fmt/core.h>
+
+#if defined(_WIN32)
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <psapi.h>
+#include <chrono>
+#else
 #include <sys/resource.h>
 #include <sys/times.h>
 #include <unistd.h>
+#endif
 
 #include <gsl/narrow>
 
@@ -24,7 +32,11 @@ void Usage::start_tick() { _current_tick = _check_tick(); }
 
 void Usage::end_tick() {
     auto const this_tick = _check_tick();
+#if defined(_WIN32)
+    auto const period = (this_tick - _current_tick) / 1000.0;
+#else
     auto const period    = (this_tick - _current_tick) / double(sysconf(_SC_CLK_TCK));
+#endif
     _period_used_time += period;
     _total_used_time += period;
     _current_memory = _check_memory() - _initial_memory;
@@ -42,6 +54,13 @@ void Usage::report(bool report_time, bool report_mem) {
 }
 
 double Usage::_check_memory() {
+#if defined(_WIN32)
+    PROCESS_MEMORY_COUNTERS info;
+    if (GetProcessMemoryInfo(GetCurrentProcess(), &info, sizeof(info))) {
+        return static_cast<double>(info.PeakWorkingSetSize) / double(1 << 20);
+    }
+    return 0;
+#else
     rusage usage{};
     if (0 == getrusage(RUSAGE_SELF, &usage))
 #ifdef __APPLE__
@@ -53,9 +72,17 @@ double Usage::_check_memory() {
 #endif
     else
         return 0;
+#endif
 }
 double Usage::_check_tick() {
+#if defined(_WIN32)
+    return static_cast<double>(
+        std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::steady_clock::now().time_since_epoch()).count());
+#else
     tms buffer{};
     times(&buffer);
     return static_cast<double>(buffer.tms_utime);
+#endif
 }
+

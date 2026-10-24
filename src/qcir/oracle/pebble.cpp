@@ -55,7 +55,7 @@ DepGraph from_deps_file(std::istream& ifs) {
         }
     }
 
-    for (const auto& i : iota(0UL, tmp.size())) {
+    for (const auto& i : iota(size_t{0}, tmp.size())) {
         auto node = Node(NodeID(i));
         for (const auto& dep : tmp[i]) {
             node.dependencies.emplace_back(NodeID(dep));
@@ -118,9 +118,9 @@ std::optional<std::vector<std::vector<bool>>> pebble(SatSolver& solver, size_t c
     auto make_variables = [](SatSolver& solver, const size_t num_nodes, const size_t k) {
         solver.reset();
         auto p = vector<vector<Variable>>(k);
-        for (const size_t i : iota(0UL, k)) {
+        for (const size_t i : iota(size_t{0}, k)) {
             p[i] = vector<Variable>(num_nodes);
-            for (const size_t j : iota(0UL, num_nodes)) {
+            for (const size_t j : iota(size_t{0}, num_nodes)) {
                 p[i][j] = solver.new_var();
             }
         }
@@ -134,7 +134,7 @@ std::optional<std::vector<std::vector<bool>>> pebble(SatSolver& solver, size_t c
                             const size_t k,
                             const size_t num_pebbles) {
         // Initial and final clauses
-        for (const size_t i : iota(0UL, num_nodes)) {
+        for (const size_t i : iota(size_t{0}, num_nodes)) {
             // at time 0, no node is pebbled
             solver.add_clause({~Literal(p[0][i])});
             // at time K, all output nodes are pebbled, and all other nodes are not pebbled
@@ -147,7 +147,7 @@ std::optional<std::vector<std::vector<bool>>> pebble(SatSolver& solver, size_t c
         // if a node is pebbled at time i, then all its dependencies must be pebbled at time i + 1
         // if a node is not pebbled at time i, then all its dependencies must be pebbled at time i
         // (a xor b) + cd = (~a + b + c) (~a + b + d) (a + ~b + c) (a + ~b + d)
-        for (const size_t i : iota(0UL, k - 1)) {
+        for (const size_t i : iota(size_t{0}, k - 1)) {
             for (const auto& node : graph.get_graph() | std::views::values) {
                 for (const auto& dep_id : node.dependencies) {
                     auto const a = Literal(p[i][node.id.get()]);
@@ -163,7 +163,7 @@ std::optional<std::vector<std::vector<bool>>> pebble(SatSolver& solver, size_t c
         }
 
         // Cardinality Clauses
-        for (const size_t i : iota(0UL, k)) {
+        for (const size_t i : iota(size_t{0}, k)) {
             auto p_i = p[i] | std::views::transform([](const Variable& var) { return Literal(var); }) | tl::to<std::vector>();
 
             solver.add_lte_constraint(p_i, num_pebbles);
@@ -206,8 +206,8 @@ std::optional<std::vector<std::vector<bool>>> pebble(SatSolver& solver, size_t c
     }
 
     std::vector<std::vector<bool>> schedule(k, std::vector<bool>(num_nodes, false));
-    for (const size_t i : iota(0UL, k)) {
-        for (const size_t j : iota(0UL, num_nodes)) {
+    for (const size_t i : iota(size_t{0}, k)) {
+        for (const size_t j : iota(size_t{0}, num_nodes)) {
             schedule[i][j] = (*solution)[p[i][j]];
         }
     }
@@ -252,7 +252,7 @@ void test_pebble(const size_t num_pebbles, std::istream& input) {
     }
 
     fmt::println("solution:");
-    for (const size_t i : iota(0UL, schedule->size())) {
+    for (const size_t i : iota(size_t{0}, schedule->size())) {
         fmt::println("time = {:02} : {}", i, fmt::join((*schedule)[i] | std::views::transform([](bool b) { return b ? "*" : "."; }), ""));
     }
 }

@@ -58,7 +58,7 @@ void apply_clifford(Tableau& tableau, CliffordOperatorString const& clifford, si
 }
 
 void implement_into_tableau(Tableau& tableau, StabilizerTableau& context, size_t qubit, dvlab::Phase const& phase) {
-    auto const qubit_range = std::views::iota(0ul, context.n_qubits());
+    auto const qubit_range = std::views::iota(size_t{0}, context.n_qubits());
     CliffordOperatorString clifford{};
 
     auto stabilizer = std::ref(context.stabilizer(qubit));
@@ -79,11 +79,11 @@ void implement_into_tableau(Tableau& tableau, StabilizerTableau& context, size_t
 
         if (stabilizer.get().is_z_set(ctrl)) {
             context.s(ctrl);
-            clifford.emplace_back(CliffordOperatorType::s, std::array{ctrl, 0ul});
+            clifford.emplace_back(CliffordOperatorType::s, std::array{ctrl, size_t{0}});
         }
 
         context.h(ctrl);
-        clifford.emplace_back(CliffordOperatorType::h, std::array{ctrl, 0ul});
+        clifford.emplace_back(CliffordOperatorType::h, std::array{ctrl, size_t{0}});
     }
 
     apply_clifford(tableau, clifford, context.n_qubits());

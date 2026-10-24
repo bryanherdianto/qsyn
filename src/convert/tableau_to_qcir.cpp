@@ -137,7 +137,7 @@ get_control_rows(
     size_t pivot) {
     auto const num_qubits = rotations.front().n_qubits();
     auto control_rows     = std::vector<size_t>{};
-    for (auto i : std::views::iota(0ul, num_qubits)) {
+    for (auto i : std::views::iota(size_t{0}, num_qubits)) {
         if (i == pivot) continue;
 
         if (std::ranges::all_of(
@@ -165,7 +165,7 @@ void apply_cxs(
     using Mode = GraySynthPauliRotationsSynthesisStrategy::Mode;
 
     auto const apply_cx = [&](size_t ctrl, size_t targ) {
-        for (auto col_id : std::views::iota(0ul, num_rotations)) {
+        for (auto col_id : std::views::iota(size_t{0}, num_rotations)) {
             if (!frozen_rotations.contains(col_id)) {
                 rotations[col_id].cx(ctrl, targ);
             }
@@ -277,8 +277,8 @@ GraySynthPauliRotationsSynthesisStrategy::synthesize(
     auto stack = std::vector<stack_elem_t>{};
 
     stack.emplace_back(
-        std::views::iota(0ul, num_rotations) | tl::to<std::vector>(),
-        std::views::iota(0ul, num_qubits) | tl::to<std::vector>(),
+        std::views::iota(size_t{0}, num_rotations) | tl::to<std::vector>(),
+        std::views::iota(size_t{0}, num_qubits) | tl::to<std::vector>(),
         SIZE_MAX);
 
     auto qcir = qcir::QCir{copy_rotations.front().n_qubits()};
@@ -288,7 +288,7 @@ GraySynthPauliRotationsSynthesisStrategy::synthesize(
     // generate 0..num_qubits random order
     static auto rng = std::mt19937{42};
     auto random_order =
-        std::views::iota(0ul, num_qubits) | tl::to<std::vector>();
+        std::views::iota(size_t{0}, num_qubits) | tl::to<std::vector>();
     std::ranges::shuffle(random_order, rng);
 
     while (!stack.empty()) {
@@ -366,7 +366,7 @@ size_t hamming_weight(
     PauliRotation const& rotation) {
     auto const num_qubits = rotation.n_qubits();
     auto num_ones         = 0ul;
-    for (auto i : std::views::iota(0ul, num_qubits)) {
+    for (auto i : std::views::iota(size_t{0}, num_qubits)) {
         if (rotation.pauli_product().is_z_set(i)) {
             num_ones++;
         }
@@ -416,7 +416,7 @@ dvlab::Digraph<size_t, int> get_parity_graph(
 
     auto qubit_vec = std::vector<size_t>{};
 
-    for (auto i : std::views::iota(0ul, num_qubits)) {
+    for (auto i : std::views::iota(size_t{0}, num_qubits)) {
         if (target_rotation.pauli_product().is_z_set(i)) {
             g.add_vertex_with_id(i);
             qubit_vec.push_back(i);

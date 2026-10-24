@@ -5,7 +5,16 @@
   Copyright    [ Copyright(c) 2023 DVLab, GIEE, NTU, Taiwan ]
 ****************************************************************************/
 #include <spdlog/spdlog.h>
+
+#if defined(_WIN32)
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+struct termios {
+    DWORD mode{0};
+};
+#else
 #include <termios.h>
+#endif
 
 #include "./cli.hpp"
 #include "cli/cli_char_def.hpp"
@@ -26,7 +35,11 @@ namespace {
  * @return auto
  */
 auto reset_keypress(termios const& stored_settings) {
+#if defined(_WIN32)
+    SetConsoleMode(GetStdHandle(STD_INPUT_HANDLE), stored_settings.mode);
+#else
     tcsetattr(0, TCSANOW, &stored_settings);
+#endif
 }
 
 /**
@@ -36,6 +49,12 @@ auto reset_keypress(termios const& stored_settings) {
  */
 [[nodiscard]] auto set_keypress() -> termios {
     termios stored_settings{};
+#if defined(_WIN32)
+    HANDLE hIn = GetStdHandle(STD_INPUT_HANDLE);
+    GetConsoleMode(hIn, &stored_settings.mode);
+    DWORD new_mode = stored_settings.mode & ~(ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT);
+    SetConsoleMode(hIn, new_mode);
+#else
     tcgetattr(0, &stored_settings);
     termios new_settings = stored_settings;
     new_settings.c_lflag &= (~ICANON);  // make sure we can read one char at a time
@@ -43,9 +62,11 @@ auto reset_keypress(termios const& stored_settings) {
     new_settings.c_cc[VTIME] = 0;       // start reading immediately
     new_settings.c_cc[VMIN]  = 1;       // ...and wait until we get one char to return
     tcsetattr(0, TCSANOW, &new_settings);
+#endif
 
     return stored_settings;
 }
+
 
 auto mygetc(std::istream& istr) -> char {
     char ch = 0;
@@ -395,7 +416,7 @@ size_t dvlab::CommandLineInterface::_prev_matching_history(size_t count) {
     if (count == 0) return _history_idx;
     auto const prefix = _temp_command_stored ? _history.back().input : _read_buffer;
     size_t targ_idx   = _history_idx;
-    for (auto i : std::views::iota(0ul, _history_idx) | std::views::reverse) {
+    for (auto i : std::views::iota(size_t{0}, _history_idx) | std::views::reverse) {
         if (_history[i].input.starts_with(prefix)) {
             --count;
             targ_idx = i;

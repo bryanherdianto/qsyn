@@ -247,7 +247,7 @@ std::vector<Operation> zx_optimize(std::vector<qcir::Operation> const& partial) 
 }  // namespace
 
 void Optimizer::_partial_zx_optimization(QCir& qcir) {
-    for (auto const qubit : std::views::iota(0ul, qcir.get_num_qubits())) {
+    for (auto const qubit : std::views::iota(size_t{0}, qcir.get_num_qubits())) {
         auto const get_type_sequence = [](auto const& gate_list, QubitIdType qubit) {
             return gate_list |
                    std::views::filter([qubit](auto gate) {

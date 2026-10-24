@@ -60,7 +60,7 @@ std::vector<size_t> get_qubit_idx_vec(QubitIdList const& qubits) {
     // guaranteed to be a vector of PauliRotation
     auto& last_rotation_group = std::get<std::vector<PauliRotation>>(tableau.back());
 
-    for (auto const comb_size : std::views::iota(0ul, qubits.size())) {
+    for (auto const comb_size : std::views::iota(size_t{0}, qubits.size())) {
         bool const is_neg  = comb_size % 2;
         auto qubit_idx_vec = get_qubit_idx_vec(qubits);
         for (auto qubit_idx_vec : dvlab::combinations(get_qubit_idx_vec(qubits), comb_size)) {
@@ -68,7 +68,7 @@ std::vector<size_t> get_qubit_idx_vec(QubitIdList const& qubits) {
                 return false;
             }
             auto const pauli_range =
-                std::views::iota(0ul, tableau.n_qubits()) |
+                std::views::iota(size_t{0}, tableau.n_qubits()) |
                 std::views::transform([&qubit_idx_vec, targ](auto i) -> Pauli {
                     // if i is in qubit_idx_range, return Z, otherwise I
                     return (i == targ) || dvlab::contains(qubit_idx_vec, i) ? Pauli::z : Pauli::i;
@@ -114,7 +114,7 @@ std::vector<size_t> get_qubit_idx_vec(QubitIdList const& qubits) {
                 return false;
             }
             auto const pauli_range =
-                std::views::iota(0ul, tableau.n_qubits()) |
+                std::views::iota(size_t{0}, tableau.n_qubits()) |
                 std::views::transform([&qubit_idx_vec](auto i) -> Pauli {
                     return dvlab::contains(qubit_idx_vec, i) ? Pauli::z : Pauli::i;
                 }) |

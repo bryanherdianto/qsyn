@@ -604,7 +604,7 @@ std::optional<QCir> to_basic_gates(qcir::QCir const& qcir) {
 QCir as_qcir(Operation const& op) {
     auto const n_qubits = op.get_num_qubits();
     auto const qubits =
-        std::views::iota(0ul, n_qubits) |
+        std::views::iota(size_t{0}, n_qubits) |
         tl::to<QubitIdList>();
     QCir qcir{n_qubits};
     qcir.append(op, qubits);

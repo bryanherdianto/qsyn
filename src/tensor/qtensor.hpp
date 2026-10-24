@@ -443,10 +443,10 @@ QTensor<T> QTensor<T>::to_matrix() {
     auto const n_qubits = this->dimension() / 2;
 
     return this->to_matrix(
-        std::views::iota(0ul, n_qubits) |
+        std::views::iota(size_t{0}, n_qubits) |
             std::views::transform([](auto i) { return 2 * i; }) |
             tl::to<std::vector>(),
-        std::views::iota(0ul, n_qubits) |
+        std::views::iota(size_t{0}, n_qubits) |
             std::views::transform([](auto i) { return 2 * i + 1; }) |
             tl::to<std::vector>());
 }

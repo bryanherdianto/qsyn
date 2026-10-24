@@ -98,12 +98,12 @@ size_t caclculate_radamacher_walsh_cost(kitty::dynamic_truth_table const& truth_
     size_t cost               = 0;
     size_t const k            = 1 << truth_table.num_vars();
     std::vector<int> spectrum = std::vector<int>(k, 0);
-    for (auto const& i : iota(0UL, k)) {
+    for (auto const& i : iota(size_t{0}, k)) {
         spectrum[i] = kitty::get_bit(truth_table, i) ? -1 : 1;
     }
-    for (auto const& i : iota(0UL, k)) {
+    for (auto const& i : iota(size_t{0}, k)) {
         int row_sum = 0;
-        for (auto const& j : iota(0UL, k)) {
+        for (auto const& j : iota(size_t{0}, k)) {
             row_sum += hadamard_entry(k, i, j) * spectrum[j];
         }
         cost += row_sum != 0 ? 1 : 0;

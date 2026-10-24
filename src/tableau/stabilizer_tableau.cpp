@@ -329,7 +329,7 @@ CliffordOperatorString HOptSynthesisStrategy::synthesize(StabilizerTableau copy)
     // diagonalize all stabilizers
     for (size_t i = 0; i < copy.n_qubits(); ++i) {
         if (stop_requested()) break;
-        auto const qubit_range = std::views::iota(0ul, copy.n_qubits());
+        auto const qubit_range = std::views::iota(size_t{0}, copy.n_qubits());
         auto const qubits_with_stabilizer_set =
             get_qubits_with_stabilizer_set(copy, i);
 

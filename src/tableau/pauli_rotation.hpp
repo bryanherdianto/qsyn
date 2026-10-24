@@ -239,11 +239,11 @@ public:
     bool is_x_set(size_t i) const { return _bitset[_x_idx(i)]; }
 
     bool is_diagonal() const {
-        return std::ranges::all_of(std::views::iota(0ul, n_qubits()), [this](size_t i) { return is_i(i) || is_z(i); });
+        return std::ranges::all_of(std::views::iota(size_t{0}, n_qubits()), [this](size_t i) { return is_i(i) || is_z(i); });
     }
 
     bool is_identity() const {
-        return std::ranges::all_of(std::views::iota(0ul, n_qubits()), [this](size_t i) { return is_i(i); });
+        return std::ranges::all_of(std::views::iota(size_t{0}, n_qubits()), [this](size_t i) { return is_i(i); });
     }
 
 private:

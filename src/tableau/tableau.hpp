@@ -70,7 +70,7 @@ public:
         return tl::fold_left(_subtableaux, size_t{0}, [](size_t acc, auto const& subtableau) {
             return acc + dvlab::match(
                              subtableau,
-                             [](StabilizerTableau const&) { return 0ul; },
+                             [](StabilizerTableau const&) { return size_t{0}; },
                              [](std::vector<PauliRotation> const& rotations) {
                                  return rotations.size();
                              });

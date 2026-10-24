@@ -246,7 +246,7 @@ void merge_rotations(std::vector<PauliRotation>& rotations) {
  * @param rotations
  */
 void absorb_clifford_rotations(StabilizerTableau& clifford, std::vector<PauliRotation>& rotations) {
-    for (size_t const i : std::views::iota(0ul, rotations.size())) {
+    for (size_t const i : std::views::iota(size_t{0}, rotations.size())) {
         if (rotations[i].phase() != dvlab::Phase(1, 2) &&
             rotations[i].phase() != dvlab::Phase(-1, 2) &&
             rotations[i].phase() != dvlab::Phase(1)) continue;
@@ -294,7 +294,7 @@ void properize(StabilizerTableau& clifford, std::vector<PauliRotation>& rotation
 
     // properize the rotations from the last to the first
     // the order is important because absorbing a rotation may change the phase of the preceding rotations
-    for (size_t const i : std::views::iota(0ul, rotations.size()) | std::views::reverse) {
+    for (size_t const i : std::views::iota(size_t{0}, rotations.size()) | std::views::reverse) {
         auto complement_phase = dvlab::Phase(0);
         while (!is_proper_phase(rotations[i].phase())) {
             rotations[i].phase() -= dvlab::Phase(1, 2);

@@ -121,7 +121,7 @@ std::optional<QCir> Decomposer::decompose(QTensor<U> const& matrix) {
 
     _quantum_circuit = QCir(_n_qubits);
 
-    for (auto const& i : std::views::iota(0UL, mat_chain.size()) | std::views::reverse) {
+    for (auto const& i : std::views::iota(size_t{0}, mat_chain.size()) | std::views::reverse) {
         size_t i_idx = 0, j_idx = 0;
         for (size_t j = 0; j < _n_qubits; j++) {
             i_idx = i_idx * 2 + (mat_chain[i]._i >> j & 1);
@@ -277,10 +277,10 @@ std::vector<TwoLevelMatrix<U>> Decomposer::_get_two_level_matrices(QTensor<U> ma
             auto const n_qubits = static_cast<size_t>(std::round(std::log2(_get_dimension(matrix))));
             QTensor<U> conjugate_matrix_product =
                 QTensor<U>::identity(n_qubits).to_matrix(
-                    std::views::iota(0ul, n_qubits) |
+                    std::views::iota(size_t{0}, n_qubits) |
                         std::views::transform([](auto i) { return 2 * i + 1; }) |
                         tl::to<std::vector>(),
-                    std::views::iota(0ul, n_qubits) |
+                    std::views::iota(size_t{0}, n_qubits) |
                         std::views::transform([](auto i) { return 2 * i; }) |
                         tl::to<std::vector>());
 
@@ -338,7 +338,7 @@ bool Decomposer::Decomposer::_graycode(Tensor<U> const& matrix, size_t i, size_t
 
     // do unpabbing
     DVLAB_ASSERT(gate_list.size() == qubit_list.size(), "Sizes of gate list and qubit list are different");
-    for (auto const& q : std::views::iota(0UL, gate_list.size()) | std::views::reverse) {
+    for (auto const& q : std::views::iota(size_t{0}, gate_list.size()) | std::views::reverse) {
         if (auto const op = qcir::str_to_operation(gate_list[q], {}); op.has_value()) {
             _quantum_circuit.append(*op, qubit_list[q]);
         }
